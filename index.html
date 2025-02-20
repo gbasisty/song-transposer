@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transpositor de Canciones</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        textarea {
+            font-family: monospace;
+            white-space: pre;
+            min-height: 600px;
+        }
+    </style>
+</head>
+<body class="container mt-4">
+    <h1>Transpositor de Canciones</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="entrada">Letra y Acordes (Grados):</label>
+                <textarea class="form-control" id="entrada"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="modo">Modo:</label>
+                    <select class="form-control" id="modo">
+                        <option value="mayor">Mayor</option>
+                        <option value="menor">Menor</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="tonalidad">Tonalidad:</label>
+                    <select class="form-control" id="tonalidad">
+                        <option>C</option><option>C#</option><option>D</option><option>Eb</option>
+                        <option>E</option><option>F</option><option>F#</option><option>G</option>
+                        <option>Ab</option><option>A</option><option>Bb</option><option>B</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <button class="btn btn-primary" id="transponer">Transponer</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="salida">Resultado:</label>
+                <textarea class="form-control" id="salida"></textarea>
+                <button class="btn btn-secondary mt-2" id="copiar">Copiar al Portapapeles</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#transponer').click(function() {
+                transponer();
+            });
+
+            $('#copiar').click(function() {
+                $('#salida').select();
+                document.execCommand('copy');
+            });
+
+            function transponer() {
+                const escalas = {
+                    mayor: ["I", "ii", "iii", "IV", "V", "vi", "vii°"],
+                    menor: ["i", "ii°", "III", "iv", "v", "VI", "VII"]
+                };
+                const notas = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+                const grados = { "I": 0, "II": 1, "III": 2, "IV": 3, "V": 4, "VI": 5, "VII": 6 };
+
+                let modo = document.getElementById("modo").value;
+                let tonalidad = document.getElementById("tonalidad").value;
+                let entrada = document.getElementById("entrada").value.split("\n");
+                let baseIndex = notas.indexOf(tonalidad);
+                let escala = escalas[modo].map((grado, i) => {
+                    let notaIndex = (baseIndex + [0, 2, 4, 5, 7, 9, 11][i]) % 12;
+                    let nota = notas[notaIndex];
+                    return grado.includes("°") ? nota + "dim" : grado === grado.toLowerCase() ? nota + "m" : nota;
+                });
+                let salida = entrada.map(linea => linea.replace(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13)?\b/g,
+                    (match, grado, tension = '') => {
+                        let index = grados[grado];
+                        return index !== undefined ? escala[index] + tension : match;
+                    }
+                )).join("\n");
+                document.getElementById("salida").value = salida;
+            }
+        });
+    </script>
+</body>
+</html>
