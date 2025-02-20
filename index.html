@@ -12,6 +12,9 @@
             white-space: pre;
             min-height: 600px;
         }
+        .acorde-azul {
+            color: blue;
+        }
     </style>
 </head>
 <body class="container mt-4">
@@ -83,7 +86,7 @@
                 let salida = entrada.map(linea => linea.replace(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13)?\b/g,
                     (match, grado, tension = '') => {
                         let index = grados[grado];
-                        return index !== undefined ? escala[index] + tension : match;
+                        return index !== undefined ? `<span class="acorde-azul">${escala[index] + tension}</span>` : match;
                     }
                 )).join("\n");
                 document.getElementById("salida").value = salida;
