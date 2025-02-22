@@ -1,5 +1,5 @@
 body, textarea, #outputArea {
-    font-family: monospace;
+    font-family: 'Roboto Mono', monospace;
 }
 
 textarea, #outputArea {
