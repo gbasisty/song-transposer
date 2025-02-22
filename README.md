@@ -1,6 +1,8 @@
 # song-transposer
 
-Transpone canciones a partir del texto con los grados. La aplicación esta desplegada [aqui](https://song-transposer.netlify.app/).
+Transpone canciones a partir del texto con los grados. 
+Para acceder al panel de **Netlifi** hacer click [aquí](https://app.netlify.com/teams/gbasisty/sites).
+La aplicación esta desplegada [aquí](https://song-transposer.netlify.app/).
 
 ## Ejemplo
 
