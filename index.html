@@ -8,39 +8,29 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="functions.js"></script>
     <style>
-        body, div[contenteditable="true"] {
+        body, textarea, #salida {
             font-family: monospace;
         }
 
-        div[contenteditable="true"] {
+        textarea, #salida {
             white-space: pre-wrap;
             word-wrap: break-word;
             min-height: 600px;
+            max-height: 600px;
             border: 1px solid #ccc;
             padding: 10px;
             background-color: #f9f9f9;
             color: black;
             outline: none;
+            overflow-y: auto;
         }
 
-        div[contenteditable="true"]:empty:before {
-            content: "Haz tus ediciones aquí...";
+        textarea::placeholder {
             color: #888;
         }
 
         .transpuesto {
             color: blue;
-        }
-
-        #salida {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            min-height: 600px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f9f9f9;
-            color: black;
-            outline: none;
         }
     </style>
 </head>
@@ -50,7 +40,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="entrada">Letra y Acordes (Grados):</label>
-                <div id="entrada" contenteditable="true" class="form-control" style="min-height: 600px;"></div>
+                <textarea id="entrada" class="form-control" placeholder="Haz tus ediciones aquí..."></textarea>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
@@ -92,7 +82,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="salida">Resultado:</label>
-                <div id="salida" contenteditable="true"></div>
+                <div id="salida" class="form-control"></div>
                 <button class="btn btn-secondary mt-2" id="copiar">Copiar al Portapapeles</button>
             </div>
         </div>

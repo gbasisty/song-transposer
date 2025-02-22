@@ -18,27 +18,34 @@ $(document).ready(function() {
             .then(data => {
                 let modo = document.getElementById("modo").value;
                 let tonalidad = document.getElementById("tonalidad").value;
-                let entrada = document.getElementById("entrada").innerText.split("\n");
-    
+                let entrada = document.getElementById("entrada").value.split("\n"); // Cambio aquí
+
                 let modoData = modo === "mayor" ? data.modoMayor : data.modoMenor;
-    
+
                 let tonalidadData = modoData.find(item => item.tonalidad === tonalidad);
-    
+
                 if (!tonalidadData) {
                     // Manejar el error si no se encuentra la tonalidad
                     return;
                 }
-    
-                let salida = entrada.map(linea => linea.replace(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13)?\b/g,
-                    (match, grado, tension = '') => {
-                        let acordeData = tonalidadData.acordes.find(acorde => acorde.grado === grado);
-                        if (acordeData) {
-                            return `<span class="transpuesto">${acordeData.acorde + tension}</span>`;
+
+                let salida = entrada.map(linea => {
+                    let partes = linea.split(/(\s+)/);
+
+                    return partes.map(parte => {
+                        let match = parte.match(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?\b/);
+                        if (match) {
+                            let grado = match[1];
+                            let tension = match[2] || "";
+                            let acordeData = tonalidadData.acordes.find(acorde => acorde.grado === grado);
+                            if (acordeData) {
+                                return `<span class="transpuesto">${acordeData.acorde + tension}</span>`;
+                            }
                         }
-                        return match;
-                    }
-                )).join("\n");
-    
+                        return parte;
+                    }).join("");
+                }).join("\n");
+
                 document.getElementById("salida").innerHTML = salida;
             });
     }
