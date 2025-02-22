@@ -5,12 +5,39 @@ $(document).ready(function() {
 
     $('#copyBtn').click(function() {
         const outputArea = document.getElementById("outputArea");
-        const range = document.createRange();
-        range.selectNode(outputArea);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-        document.execCommand('copy');
+        const htmlContent = outputArea.innerHTML;
+
+        if (navigator.clipboard && navigator.clipboard.write) {
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const data = [new ClipboardItem({ 'text/html': blob })];
+
+            navigator.clipboard.write(data).then(() => {
+                console.log('Contenido HTML copiado al portapapeles.');
+            }).catch(err => {
+                console.error('Error al copiar el contenido HTML: ', err);
+                // Fallback para navegadores que no soportan Clipboard.write()
+                fallbackCopy(htmlContent);
+            });
+        } else {
+            // Fallback para navegadores que no soportan Clipboard.write()
+            fallbackCopy(htmlContent);
+        }
     });
+
+    function fallbackCopy(htmlContent) {
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = htmlContent;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        try {
+            const successful = document.execCommand('copy');
+            const msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Fallback: Copiar al portapapeles fue ' + msg);
+        } catch (err) {
+            console.error('Fallback: No se pudo copiar al portapapeles', err);
+        }
+        document.body.removeChild(tempTextArea);
+    }
 
     function transpose() {
         fetch('data/scales.json')
