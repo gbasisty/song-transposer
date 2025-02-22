@@ -1,48 +1,35 @@
 $(document).ready(function() {
-    $('#transposeBtn').click(function() {
-        transpose();
-    });
-
-    $('#copyBtn').click(function() {
-        const outputArea = document.getElementById("outputArea");
-        const range = document.createRange();
-        range.selectNode(outputArea);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-        document.execCommand('copy');
-    });
+    // ... (resto del código)
 
     function transpose() {
+        const direction = $('input[name="direction"]:checked').val();
         fetch('data/scales.json')
             .then(response => response.json())
             .then(data => {
-                let scale = document.getElementById("scale").value;
-                let key = document.getElementById("key").value;
-                let inputArea = document.getElementById("inputArea").value.split("\n");
-
-                let modeData = scale === "major" ? data.major : data.minor;
-
-                let keyData = modeData.find(item => item.key === key);
-
-                if (!keyData) {
-                    return;
-                }
+                // ... (resto del código)
 
                 let outputLines = inputArea.map(line => {
                     let parts = line.split(/(\s+)/);
 
-                    return parts.map(part => {
-                        let match = part.match(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?\b/);
-                        if (match) {
-                            let degree = match[1];
-                            let tension = match[2] || "";
-                            let chordData = keyData.chords.find(chord => chord.degree === degree);
-                            if (chordData) {
-                                return `<span class="transposed">${chordData.chord + tension}</span>`;
+                    if (direction === "degreesToChords") {
+                        // ... (código para grados a acordes)
+                    } else {
+                        // Acordes a grados
+                        return parts.map(part => {
+                            let chordMatch = part.match(/\b([A-G][b#]?(m|maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?)\b/);
+                            if (chordMatch) {
+                                let chordWithTension = chordMatch[1];
+                                let degreeData = keyData.chords.find(item => {
+                                    // Verificar si el acorde en el JSON coincide con el acorde con tensión
+                                    return item.chord + (chordWithTension.match(/(m|maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?/)[0] || '') === chordWithTension;
+                                });
+                                if (degreeData) {
+                                    return `<span class="transposed">${degreeData.degree}</span>`;
+                                }
                             }
-                        }
-                        return part;
-                    }).join("");
+                            return part;
+                        }).join("");
+                    }
                 });
 
                 document.getElementById("outputArea").innerHTML = outputLines.join("\n");
