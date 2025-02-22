@@ -1,8 +1,8 @@
-body, textarea, #salida {
+body, textarea, #outputArea {
     font-family: monospace;
 }
 
-textarea, #salida {
+textarea, #outputArea {
     white-space: pre-wrap;
     word-wrap: break-word;
     min-height: 600px;
@@ -19,6 +19,6 @@ textarea::placeholder {
     color: #888;
 }
 
-.transpuesto {
+.transposed {
     color: blue;
 }

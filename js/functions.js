@@ -1,51 +1,51 @@
 $(document).ready(function() {
-    $('#transponer').click(function() {
-        transponer();
+    $('#transposeBtn').click(function() {
+        transpose();
     });
 
-    $('#copiar').click(function() {
-        const salida = document.getElementById("salida");
+    $('#copyBtn').click(function() {
+        const outputArea = document.getElementById("outputArea");
         const range = document.createRange();
-        range.selectNode(salida);
+        range.selectNode(outputArea);
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(range);
         document.execCommand('copy');
     });
 
-    function transponer() {
-        fetch('data/tonalidades.json') // Ruta modificada
+    function transpose() {
+        fetch('data/scales.json')
             .then(response => response.json())
             .then(data => {
-                let modo = document.getElementById("modo").value;
-                let tonalidad = document.getElementById("tonalidad").value;
-                let entrada = document.getElementById("entrada").value.split("\n");
+                let mode = document.getElementById("mode").value;
+                let key = document.getElementById("key").value;
+                let inputArea = document.getElementById("inputArea").value.split("\n");
 
-                let modoData = modo === "mayor" ? data.modoMayor : data.modoMenor;
+                let modeData = mode === "major" ? data.majorMode : data.minorMode; // Cambio aquí
 
-                let tonalidadData = modoData.find(item => item.tonalidad === tonalidad);
+                let keyData = modeData.find(item => item.key === key); // Cambio aquí
 
-                if (!tonalidadData) {
+                if (!keyData) {
                     return;
                 }
 
-                let salida = entrada.map(linea => {
-                    let partes = linea.split(/(\s+)/);
+                let outputArea = inputArea.map(line => {
+                    let parts = line.split(/(\s+)/);
 
-                    return partes.map(parte => {
-                        let match = parte.match(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?\b/);
+                    return parts.map(part => {
+                        let match = part.match(/\b(I{1,3}|IV|V?I{0,3})(maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?\b/);
                         if (match) {
-                            let grado = match[1];
+                            let degree = match[1];
                             let tension = match[2] || "";
-                            let acordeData = tonalidadData.acordes.find(acorde => acorde.grado === grado);
-                            if (acordeData) {
-                                return `<span class="transpuesto">${acordeData.acorde + tension}</span>`;
+                            let chordData = keyData.chords.find(chord => chord.degree === degree); // Cambio aquí
+                            if (chordData) {
+                                return `<span class="transposed">${chordData.chord + tension}</span>`; // Cambio aquí
                             }
                         }
-                        return parte;
+                        return part;
                     }).join("");
                 }).join("\n");
 
-                document.getElementById("salida").innerHTML = salida;
+                document.getElementById("outputArea").innerHTML = outputArea;
             });
     }
 });
