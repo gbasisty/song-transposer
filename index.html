@@ -5,35 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transpositor de Canciones</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="functions.js"></script>
-    <style>
-        body, textarea, #salida {
-            font-family: monospace;
-        }
-
-        textarea, #salida {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            min-height: 600px;
-            max-height: 600px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f9f9f9;
-            color: black;
-            outline: none;
-            overflow-y: auto;
-        }
-
-        textarea::placeholder {
-            color: #888;
-        }
-
-        .transpuesto {
-            color: blue;
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="css/styles.css"> <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="js/functions.js"></script> </head>
 <body class="container mt-4">
     <h1>Transpositor de Canciones</h1>
     <div class="row">
@@ -82,7 +55,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="salida">Resultado:</label>
-                <div id="salida" class="form-control"></div>
+                <div id="salida" class="form-control" contenteditable="true"></div>
                 <button class="btn btn-secondary mt-2" id="copiar">Copiar al Portapapeles</button>
             </div>
         </div>

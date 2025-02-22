@@ -13,19 +13,18 @@ $(document).ready(function() {
     });
 
     function transponer() {
-        fetch('tonalidades.json')
+        fetch('data/tonalidades.json') // Ruta modificada
             .then(response => response.json())
             .then(data => {
                 let modo = document.getElementById("modo").value;
                 let tonalidad = document.getElementById("tonalidad").value;
-                let entrada = document.getElementById("entrada").value.split("\n"); // Cambio aquí
+                let entrada = document.getElementById("entrada").value.split("\n");
 
                 let modoData = modo === "mayor" ? data.modoMayor : data.modoMenor;
 
                 let tonalidadData = modoData.find(item => item.tonalidad === tonalidad);
 
                 if (!tonalidadData) {
-                    // Manejar el error si no se encuentra la tonalidad
                     return;
                 }
 
