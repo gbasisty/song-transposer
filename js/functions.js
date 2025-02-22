@@ -16,11 +16,11 @@ $(document).ready(function() {
         fetch('data/scales.json')
             .then(response => response.json())
             .then(data => {
-                let mode = document.getElementById("mode").value;
+                let scale = document.getElementById("scale").value;
                 let key = document.getElementById("key").value;
                 let inputArea = document.getElementById("inputArea").value.split("\n");
 
-                let modeData = mode === "major" ? data.majorMode : data.minorMode;
+                let modeData = scale === "major" ? data.major : data.minor;
 
                 let keyData = modeData.find(item => item.key === key);
 
