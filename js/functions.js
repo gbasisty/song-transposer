@@ -20,7 +20,19 @@ $(document).ready(function() {
                 let key = document.getElementById("key").value;
                 let inputArea = document.getElementById("inputArea").value.split("\n");
 
-                let modeData = scale === "major" ? data.major : data.minor;
+                let modeData;
+                if (scale === "major") {
+                    modeData = data.major;
+                } else if (scale === "minor") {
+                    modeData = data.minor;
+                    key += "m"; // Agregar "m" para menor natural
+                } else if (scale === "harmonicMinor") {
+                    modeData = data.harmonicMinor;
+                    key += "m"; // Agregar "m" para menor armónica
+                } else if (scale === "melodicMinor") {
+                    modeData = data.melodicMinor;
+                    key += "m"; // Agregar "m" para menor melódica
+                }
 
                 let keyData = modeData.find(item => item.key === key);
 
