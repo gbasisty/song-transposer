@@ -20,15 +20,15 @@ $(document).ready(function() {
                 let key = document.getElementById("key").value;
                 let inputArea = document.getElementById("inputArea").value.split("\n");
 
-                let modeData = mode === "major" ? data.majorMode : data.minorMode; // Cambio aquí
+                let modeData = mode === "major" ? data.majorMode : data.minorMode;
 
-                let keyData = modeData.find(item => item.key === key); // Cambio aquí
+                let keyData = modeData.find(item => item.key === key);
 
                 if (!keyData) {
                     return;
                 }
 
-                let outputArea = inputArea.map(line => {
+                let outputLines = inputArea.map(line => {
                     let parts = line.split(/(\s+)/);
 
                     return parts.map(part => {
@@ -36,16 +36,16 @@ $(document).ready(function() {
                         if (match) {
                             let degree = match[1];
                             let tension = match[2] || "";
-                            let chordData = keyData.chords.find(chord => chord.degree === degree); // Cambio aquí
+                            let chordData = keyData.chords.find(chord => chord.degree === degree);
                             if (chordData) {
-                                return `<span class="transposed">${chordData.chord + tension}</span>`; // Cambio aquí
+                                return `<span class="transposed">${chordData.chord + tension}</span>`;
                             }
                         }
                         return part;
                     }).join("");
-                }).join("\n");
+                });
 
-                document.getElementById("outputArea").innerHTML = outputArea;
+                document.getElementById("outputArea").innerHTML = outputLines.join("\n");
             });
     }
 });
