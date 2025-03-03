@@ -1,5 +1,7 @@
 body, textarea, #outputArea {
-    font-family: monospace;
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 16px !important;
+    font-weight: normal !important;
 }
 
 textarea, #outputArea {
@@ -9,7 +11,7 @@ textarea, #outputArea {
     max-height: 600px;
     border: 1px solid #ccc;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: transparent;
     color: black;
     outline: none;
     overflow-y: auto;
