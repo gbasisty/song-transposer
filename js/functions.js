@@ -144,4 +144,15 @@ $(document).ready(function() {
                 document.getElementById("outputArea").innerHTML = outputLines.join("\n");
             });
     }
+
+    $('input[name="direction"]').change(function() {
+        const direction = $('input[name="direction"]:checked').val();
+        if (direction === "degreesToChords") {
+            $('#transposeBtn').text("Transponer");
+            $('#inputAreaLabel').text("Letra y Acordes (Grados):");
+        } else {
+            $('#transposeBtn').text("Detransponer");
+            $('#inputAreaLabel').text("Letra y Acordes (Acordes):");
+        }
+    });
 });
