@@ -1,27 +1,27 @@
 $(document).ready(function() {
     $('#transposeBtn').click(function() {
-        transpose();
+        const direction = $('input[name="direction"]:checked').val();
+        if (direction === "degreesToChords") {
+            transpose();
+        } else {
+            detranspose();
+        }
+    });
+
+    $('#clearBtn').click(function() {
+        $('#inputArea').val('');
+        $('#outputArea').empty();
     });
 
     $('#copyBtn').click(function() {
         const outputArea = document.getElementById("outputArea");
-        const htmlContent = outputArea.innerHTML;
-
-        if (navigator.clipboard && navigator.clipboard.write) {
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const data = [new ClipboardItem({ 'text/html': blob })];
-
-            navigator.clipboard.write(data).then(() => {
-                console.log('Contenido HTML copiado al portapapeles.');
-            }).catch(err => {
-                console.error('Error al copiar el contenido HTML: ', err);
-                // Fallback para navegadores que no soportan Clipboard.write()
-                fallbackCopy(htmlContent);
-            });
-        } else {
-            // Fallback para navegadores que no soportan Clipboard.write()
-            fallbackCopy(htmlContent);
-        }
+        const range = document.createRange();
+        range.selectNodeContents(outputArea);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
     });
 
     function fallbackCopy(htmlContent) {
@@ -52,13 +52,13 @@ $(document).ready(function() {
                     modeData = data.major;
                 } else if (scale === "minor") {
                     modeData = data.minor;
-                    key += "m"; // Agregar "m" para menor natural
+                    key += "m";
                 } else if (scale === "harmonicMinor") {
                     modeData = data.harmonicMinor;
-                    key += "m"; // Agregar "m" para menor armónica
+                    key += "m";
                 } else if (scale === "melodicMinor") {
                     modeData = data.melodicMinor;
-                    key += "m"; // Agregar "m" para menor melódica
+                    key += "m";
                 }
 
                 let keyData = modeData.find(item => item.key === key);
@@ -84,6 +84,63 @@ $(document).ready(function() {
                     }).join("");
                 });
 
+                document.getElementById("outputArea").innerHTML = outputLines.join("\n");
+            });
+    }
+
+    function detranspose() {
+        fetch('data/scales.json')
+            .then(response => response.json())
+            .then(data => {
+                let scale = document.getElementById("scale").value;
+                let key = document.getElementById("key").value;
+                let inputArea = document.getElementById("inputArea").value.split("\n");
+    
+                let modeData;
+                if (scale === "major") {
+                    modeData = data.major;
+                } else if (scale === "minor") {
+                    modeData = data.minor;
+                    key += "m";
+                } else if (scale === "harmonicMinor") {
+                    modeData = data.harmonicMinor;
+                    key += "m";
+                } else if (scale === "melodicMinor") {
+                    modeData = data.melodicMinor;
+                    key += "m";
+                }
+    
+                let keyData = modeData.find(item => item.key === key);
+    
+                if (!keyData) {
+                    return;
+                }
+    
+                let outputLines = inputArea.map(line => {
+                    let parts = line.split(/(\s+)/);
+    
+                    return parts.map(part => {
+                        let chordMatch = part.match(/\b([A-G][b#]?(m|maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?)\b/);
+                        if (chordMatch) {
+                            let chordWithTension = chordMatch[1];
+                            let tension = chordWithTension.match(/(m|maj7|7|sus2|sus4|add9|add11|add13|\/\d+)?/)[0] || '';
+                            let chordWithoutTension = chordWithTension.replace(tension, '');
+                            let degreeData = keyData.chords.find(item => {
+                                return item.chord === chordWithoutTension;
+                            });
+                            if (degreeData) {
+                                // Verificar si la tensión es "m" y el acorde base no es menor
+                                if (tension === 'm' && !chordWithoutTension.includes('m')) {
+                                    return `<span class="transposed">${degreeData.degree.toLowerCase()}</span>`;
+                                } else {
+                                    return `<span class="transposed">${degreeData.degree}${tension}</span>`;
+                                }
+                            }
+                        }
+                        return part;
+                    }).join("");
+                });
+    
                 document.getElementById("outputArea").innerHTML = outputLines.join("\n");
             });
     }
